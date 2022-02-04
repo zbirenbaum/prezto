@@ -14,7 +14,7 @@ pmodload 'helper'
 # Load manually installed or package manager installed pyenv into the shell
 # session.
 if [[ -s "${local_pyenv::=${PYENV_ROOT:-$HOME/.pyenv}/bin/pyenv}" ]] \
-      || (( $+commands[pyenv] )); then
+  || (( $+commands[pyenv] )); then
 
   # Ensure manually installed pyenv is added to path when present.
   [[ -s $local_pyenv ]] && path=($local_pyenv:h $path)
@@ -49,41 +49,41 @@ if (( ! $#commands[(i)python[23]#] && ! $+functions[pyenv] && ! $+commands[conda
 fi
 
 function _python-workon-cwd {
-  # Check if this is a Git repo.
-  local GIT_REPO_ROOT="$(git rev-parse --show-toplevel 2> /dev/null)"
-  # Get absolute path, resolving symlinks.
-  local PROJECT_ROOT="$PWD:A"
-  while [[ "$PROJECT_ROOT" != "/" && ! -e "$PROJECT_ROOT/.venv" \
-        && ! -d "$PROJECT_ROOT/.git"  && "$PROJECT_ROOT" != "$GIT_REPO_ROOT" ]]; do
-    PROJECT_ROOT="$PROJECT_ROOT:h"
-  done
-  if [[ $PROJECT_ROOT == "/" ]]; then
-    PROJECT_ROOT="."
-  fi
-  # Check for virtualenv name override.
-  local ENV_NAME=""
-  if [[ -f "$PROJECT_ROOT/.venv" ]]; then
-    ENV_NAME="$(<$PROJECT_ROOT/.venv)"
-  elif [[ -f "$PROJECT_ROOT/.venv/bin/activate" ]]; then
-    ENV_NAME="$PROJECT_ROOT/.venv"
-  elif [[ $PROJECT_ROOT != "." ]]; then
-    ENV_NAME="$PROJECT_ROOT:t"
-  fi
-  if [[ -n $CD_VIRTUAL_ENV && "$ENV_NAME" != "$CD_VIRTUAL_ENV" ]]; then
-    # We've just left the repo, deactivate the environment.
-    # Note: this only happens if the virtualenv was activated automatically.
-    deactivate && unset CD_VIRTUAL_ENV
-  fi
-  if [[ $ENV_NAME != "" ]]; then
-    # Activate the environment only if it is not already active.
-    if [[ "$VIRTUAL_ENV" != "$WORKON_HOME/$ENV_NAME" ]]; then
-      if [[ -n "$WORKON_HOME" && -e "$WORKON_HOME/$ENV_NAME/bin/activate" ]]; then
-        workon "$ENV_NAME" && export CD_VIRTUAL_ENV="$ENV_NAME"
-      elif [[ -e "$ENV_NAME/bin/activate" ]]; then
-        source $ENV_NAME/bin/activate && export CD_VIRTUAL_ENV="$ENV_NAME"
-      fi
+# Check if this is a Git repo.
+local GIT_REPO_ROOT="$(git rev-parse --show-toplevel 2> /dev/null)"
+# Get absolute path, resolving symlinks.
+local PROJECT_ROOT="$PWD:A"
+while [[ "$PROJECT_ROOT" != "/" && ! -e "$PROJECT_ROOT/.venv" \
+  && ! -d "$PROJECT_ROOT/.git"  && "$PROJECT_ROOT" != "$GIT_REPO_ROOT" ]]; do
+  PROJECT_ROOT="$PROJECT_ROOT:h"
+done
+if [[ $PROJECT_ROOT == "/" ]]; then
+  PROJECT_ROOT="."
+fi
+# Check for virtualenv name override.
+local ENV_NAME=""
+if [[ -f "$PROJECT_ROOT/.venv" ]]; then
+  ENV_NAME="$(<$PROJECT_ROOT/.venv)"
+elif [[ -f "$PROJECT_ROOT/.venv/bin/activate" ]]; then
+  ENV_NAME="$PROJECT_ROOT/.venv"
+elif [[ $PROJECT_ROOT != "." ]]; then
+  ENV_NAME="$PROJECT_ROOT:t"
+fi
+if [[ -n $CD_VIRTUAL_ENV && "$ENV_NAME" != "$CD_VIRTUAL_ENV" ]]; then
+  # We've just left the repo, deactivate the environment.
+  # Note: this only happens if the virtualenv was activated automatically.
+  deactivate && unset CD_VIRTUAL_ENV
+fi
+if [[ $ENV_NAME != "" ]]; then
+  # Activate the environment only if it is not already active.
+  if [[ "$VIRTUAL_ENV" != "$WORKON_HOME/$ENV_NAME" ]]; then
+    if [[ -n "$WORKON_HOME" && -e "$WORKON_HOME/$ENV_NAME/bin/activate" ]]; then
+      workon "$ENV_NAME" && export CD_VIRTUAL_ENV="$ENV_NAME"
+    elif [[ -e "$ENV_NAME/bin/activate" ]]; then
+      source $ENV_NAME/bin/activate && export CD_VIRTUAL_ENV="$ENV_NAME"
     fi
   fi
+fi
 }
 
 # Load auto workon cwd hook.
@@ -96,7 +96,7 @@ fi
 # Load virtualenvwrapper into the shell session, if pre-requisites are met
 # and unless explicitly requested not to
 if (( $+VIRTUALENVWRAPPER_VIRTUALENV || $+commands[virtualenv] )) \
-      && zstyle -T ':prezto:module:python:virtualenv' initialize ; then
+  && zstyle -T ':prezto:module:python:virtualenv' initialize ; then
   # Set the directory where virtual environments are stored.
   export WORKON_HOME="${WORKON_HOME:-$HOME/.virtualenvs}"
 
@@ -114,33 +114,33 @@ if (( $+VIRTUALENVWRAPPER_VIRTUALENV || $+commands[virtualenv] )) \
     pyenv_plugins=(${(@oM)${(f)"$(pyenv commands --no-sh 2> /dev/null)"}:#virtualenv*})
   fi
 
+  # Optionally activate 'virtualenv' plugin when available.
   if (( $pyenv_plugins[(i)virtualenv-init] <= $#pyenv_plugins )); then
-    # Enable 'virtualenv' with 'pyenv'.
     eval "$(pyenv virtualenv-init - zsh)"
+  fi
 
-    # Optionally activate 'virtualenvwrapper' plugin when available.
-    if (( $pyenv_plugins[(i)virtualenvwrapper(_lazy|)] <= $#pyenv_plugins )); then
-      pyenv "$pyenv_plugins[(R)virtualenvwrapper(_lazy|)]"
-    fi
-  else
-    # Fallback to 'virtualenvwrapper' without 'pyenv' wrapper if 'python' is
-    # available in '$path'.
-    if (( ! $+VIRTUALENVWRAPPER_PYTHON )) && (( $#commands[(i)python[23]#] )); then
-      VIRTUALENVWRAPPER_PYTHON=$commands[(i)python[23]#]
-    fi
-
-    virtenv_sources=(
-      ${(@Ov)commands[(I)virtualenvwrapper(_lazy|).sh]}
-      /usr/share/virtualenvwrapper/virtualenvwrapper(_lazy|).sh(OnN)
-    )
-    if (( $#virtenv_sources )); then
-      source "$virtenv_sources[1]"
-    fi
-
-    unset virtenv_sources
+  # Optionally activate 'virtualenvwrapper' plugin when available.
+  if (( $pyenv_plugins[(i)virtualenvwrapper(_lazy|)] <= $#pyenv_plugins )); then
+    pyenv "$pyenv_plugins[(R)virtualenvwrapper(_lazy|)]"
   fi
 
   unset pyenv_plugins
+else
+  # Fallback to 'virtualenvwrapper' without 'pyenv' wrapper if 'python' is
+  # available in '$path'.
+  if (( ! $+VIRTUALENVWRAPPER_PYTHON )) && (( $#commands[(i)python[23]#] )); then
+    VIRTUALENVWRAPPER_PYTHON=$commands[(i)python[23]#]
+  fi
+
+  virtenv_sources=(
+    ${(@Ov)commands[(I)virtualenvwrapper(_lazy|).sh]}
+    /usr/share/virtualenvwrapper/virtualenvwrapper(_lazy|).sh(OnN)
+  )
+  if (( $#virtenv_sources )); then
+    source "$virtenv_sources[1]"
+  fi
+
+  unset virtenv_sources
 fi
 
 # Load conda into the shell session, if requested.
