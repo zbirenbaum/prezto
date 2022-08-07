@@ -16,7 +16,7 @@
 zstyle ':prezto:*:*' color 'yes'
 
 # Add additional directories to load prezto modules from
-# zstyle ':prezto:load' pmodule-dirs $HOME/.zprezto-contrib
+#zstyle ':prezto:load' pmodule-dirs $ZPREZTODIR/contrib
 
 # Allow module overrides when pmodule-dirs causes module name collisions
 # zstyle ':prezto:load' pmodule-allow-overrides 'yes'
@@ -29,6 +29,26 @@ zstyle ':prezto:*:*' color 'yes'
 
 # Set the Prezto modules to load (browse modules).
 # The order matters.
+ 
+# function zvm_config() {
+#   ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+#   ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+# }
+
+# function zvm_config() {
+# 	ZVM_READKEY_ENGINE=ZVM_READKEY_ENGINE_NEX
+# 	ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BEAM
+# 	ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+# 	ZVM_OPPEND_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
+#   ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
+#   ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+# }
+##'zsh-vi-mode' \ put under fzf-tab
+#zstyle ':prezto:load' pmodule 'zsh-vi-mode' 
+#place tmux at top to re-enable
+# zstyle ':prezto:module:python' skip-virtualenvwrapper-init 'off'
+# zstyle ':prezto:module:python:virtualenv' initialize 'no'
+#  'python' \
 zstyle ':prezto:load' pmodule \
   'environment' \
   'terminal' \
@@ -38,8 +58,36 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'completion' \
+  'node' \
+  'fzf-tab' \
+  'syntax-highlighting' \
   'history-substring-search' \
+  'docker' \
   'prompt'
+
+
+if [[ "$TERM" = xterm* ]]; then
+    zstyle ':prezto:module:tmux:auto-start' local 'yes'
+fi
+#
+zstyle ':prezto:module:tmux:auto-start' remote 'yes'
+#
+# # seperate local and remote tmux sessions
+# #
+zstyle ':prezto:module:tmux:auto-start' separate 'yes'
+zstyle ':prezto:module:tmux:session:local' name 'local'
+zstyle ':prezto:module:tmux:session:remote' name 'ssh'
+
+
+#FZF CONFIG
+#TMUX POPUP
+#zstyle ':fzf-tab:complete:cd:*' popup-pad 30 0
+#
+#zstyle ':fzf-tab:complete:*'fzf-preview 'exa -1 --color=always $realpath'
+
+#temp comment
+#zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always --icons $realpath'
+#zstyle ':fzf-tab:complete:nvim:*' fzf-preview 'exa -1 --color=always --icons $realpath'
 
 #
 # Autosuggestions
@@ -61,7 +109,7 @@ zstyle ':prezto:load' pmodule \
 #
 
 # Set the key mapping style to 'emacs' or 'vi'.
-zstyle ':prezto:module:editor' key-bindings 'emacs'
+zstyle ':prezto:module:editor' key-bindings 'vi'
 
 # Auto convert .... to ../..
 # zstyle ':prezto:module:editor' dot-expansion 'yes'
@@ -130,8 +178,9 @@ zstyle ':prezto:module:editor' key-bindings 'emacs'
 # Set the prompt theme to load.
 # Setting it to 'random' loads a random theme.
 # Auto set to 'off' on dumb terminals.
-zstyle ':prezto:module:prompt' theme 'sorin'
+#zstyle ':prezto:module:prompt' theme 'sorin'
 
+zstyle :prezto:module:prompt theme powerlevel10k
 # Set the working directory prompt display length.
 # By default, it is set to 'short'. Set it to 'long' (without '~' expansion)
 # for longer or 'full' (with '~' expansion) for even longer prompt display.
@@ -169,7 +218,6 @@ zstyle ':prezto:module:prompt' theme 'sorin'
 # zstyle ':prezto:module:screen:auto-start' remote 'yes'
 
 #
-# SSH
 #
 
 # Set the SSH identities to load into the agent.
@@ -181,19 +229,21 @@ zstyle ':prezto:module:prompt' theme 'sorin'
 
 # Set syntax highlighters.
 # By default, only the main highlighter is enabled.
-# zstyle ':prezto:module:syntax-highlighting' highlighters \
-#   'main' \
-#   'brackets' \
-#   'pattern' \
-#   'line' \
-#   'cursor' \
-#   'root'
+zstyle ':prezto:module:syntax-highlighting' highlighters \
+   'main' \
+   'brackets' \
+   'pattern' \
+   'line' \
+   'cursor' \
+   'root'
+
+
 #
 # Set syntax highlighting styles.
 # zstyle ':prezto:module:syntax-highlighting' styles \
-#   'builtin' 'bg=blue' \
-#   'command' 'bg=blue' \
-#   'function' 'bg=blue'
+#   'builtin' 'fg=blue' \
+#   'command' 'fg=blue' \
+#   'function' 'fg=blue'
 #
 # Set syntax pattern styles.
 # zstyle ':prezto:module:syntax-highlighting' pattern \
@@ -213,23 +263,21 @@ zstyle ':prezto:module:prompt' theme 'sorin'
 # zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 
 # Set the terminal multiplexer title format.
-# zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
+#zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 
 #
 # Tmux
 #
-
 # Auto start a session when Zsh is launched in a local terminal.
-# zstyle ':prezto:module:tmux:auto-start' local 'yes'
-
 # Auto start a session when Zsh is launched in a SSH connection.
-# zstyle ':prezto:module:tmux:auto-start' remote 'yes'
+#zstyle ':prezto:module:tmux:auto-start' remote 'yes'
 
 # Integrate with iTerm2.
-# zstyle ':prezto:module:tmux:iterm' integrate 'yes'
+#zstyle ':prezto:module:tmux:kitty' integrate 'yes'
+#zstyle ':prezto:module:tmux:auto-start' remote 'yes'
 
 # Set the default session name:
-# zstyle ':prezto:module:tmux:session' name 'YOUR DEFAULT SESSION NAME'
+#zstyle ':prezto:module:tmux:session' name 'zdesk'
 
 #
 # Utility

@@ -1,11 +1,46 @@
-#
-# Defines environment variables.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
+#ALIAS
+function _bak {
+   cp $1 $1.bak
+}
+
+alias cocmp="cd ~/.local/share/nvim/site/pack/packer/opt/copilot-cmp/lua/copilot_cmp"
+alias colua="cd ~/.local/share/nvim/site/pack/packer/opt/copilot.lua/lua/copilot"
+alias ncmp="cd ~/.local/share/nvim/site/pack/packer/opt/nvim-cmp/lua/cmp"
+alias find="find -j4"
+
+alias bak="_bak"
+alias vimdiff='nvim -d'
+alias nvim="/home/zach/progfiles/neovim-git/bin/nvim"
+#alias nvim="/home/zach/progfiles/msgfunc/bin/nvim"
+#alias nvim="/home/zach/development/nvim/neovim-semantic-hl/bin/nvim"
+alias vim="nvim"
+alias vi="nvim"
+alias ls="exa --icons"
+alias l="exa --icons"
+alias wrecog="cd ~/development/research/summer/SealFaceRecognition/"
+alias wp10="cd ~/.config/zsh/.zprezto/modules/prompt/external/powerlevel10k/internal/"
+alias elinks="elinks -config-dir ~/.config/elinks"
+alias p10test="rm -rf ~/.cache/*p10k* && zcompile ~/.config/zsh/.zprezto/modules/prompt/external/powerlevel10k/internal/p10k.zsh"
+alias mutt="neomutt"
+alias nvconf="cd ~/.config/nvim/lua/custom"
+alias luamake=/home/zach/progfiles/lua-language-server/3rd/luamake/luamake
+alias zshcfg="cd ~/.config/zsh"
+
+alias vpn-on="nmcli connection up us-chi.prod.surfshark.comsurfshark_openvpn_udp"
+alias vpn-off="nmcli connection down us-chi.prod.surfshark.comsurfshark_openvpn_udp"
+#alias pylance-langserver="node ~/progfiles/pylance/extension/dist/server.bundle.js"
+
+# alias vlime='sbcl --load ~/.local/share/nvim/site/pack/packer/start/vlime/lisp/start-vlime.lisp'
+
+source '/home/zach/.config/zsh/fzftab.zsh'
+
+# if [ -n "$SSH_TTY" ]; then
+#    zstyle ':prezto:module:tmux:session' name 'ssh'
+# else
+#    zstyle ':prezto:module:tmux:session' name 'local'
+# fi
 
 # Ensure that a non-login, non-interactive shell has a defined environment.
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprofile"
+   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi

@@ -1,45 +1,3 @@
-#
-# Executes commands at login pre-zshrc.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
-
-#
-# Browser
-#
-
-if [[ -z "$BROWSER" && "$OSTYPE" == darwin* ]]; then
-  export BROWSER='open'
-fi
-
-#
-# Editors
-#
-
-if [[ -z "$EDITOR" ]]; then
-  export EDITOR='nano'
-fi
-if [[ -z "$VISUAL" ]]; then
-  export VISUAL='nano'
-fi
-if [[ -z "$PAGER" ]]; then
-  export PAGER='less'
-fi
-
-#
-# Language
-#
-
-if [[ -z "$LANG" ]]; then
-  export LANG='en_US.UTF-8'
-fi
-
-#
-# Paths
-#
-
-# Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
 
 # Set the list of directories that cd searches.
@@ -48,26 +6,75 @@ typeset -gU cdpath fpath mailpath path
 # )
 
 # Set the list of directories that Zsh searches for programs.
-path=(
-  $HOME/{,s}bin(N)
-  /opt/{homebrew,local}/{,s}bin(N)
-  /usr/local/{,s}bin(N)
-  $path
-)
 
-#
-# Less
-#
+#export PATH=/usr/local/bin:$PATH
+# Reduce vimode lag
+#PERL INIT
+PATH="/home/zach/.local/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/zach/.local/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/zach/.local/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/zach/.local/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/zach/.local/perl5"; export PERL_MM_OPT;
+# RUBY INIT
+#export PATH=$HOME/.config/rofi/bin:$PATH
+# CUDA DEFAULTS
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
+export CUDA_HOME=$CUDA_HOME:/usr/local/cuda
+# EDITOR DEFAULTS
+export XDG_DATA_HOME=$HOME/.local/share/
+export EDITOR=nvim
+export VISUAL=nvim
+# G0 INIT
+export GOPATH=$HOME/.local/go
+export GOMODCACHE=$GOPATH/pkg/mod
 
-# Set the default Less options.
-# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
-# Remove -X to enable it.
-if [[ -z "$LESS" ]]; then
-  export LESS='-g -i -M -R -S -w -X -z-4'
-fi
+export SYSTEMD_EDITOR=nvim
+
+# Etc stuff
+# export LUA_PATH='/usr/local/share/lua/5.1/?.lua;/usr/share/lua/5.1'
+# export LUA_PATH='/usr/local/share/lua/5.4/?.lua;/usr/share/lua/5.4'
+export NVIM_PLUGIN_DIR="$HOME/.local/share/nvim/site/pack/packer"
+export MATLAB=/home/zach/progfiles/matlab/R2022a
+export KITTY_INSTALLATION_DIR="/usr/lib/kitty"
+
+setopt globdots
+export LESS='-g -i -M -R -S -w -X -z-4'
+
+#disable node warnings
+export NODE_NO_WARNINGS=1
+
+export QT_X11_NO_MITSHM=1
+
+export ANDROID_SDK_ROOT="$HOME/progfiles/Android/android"
 
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
 if [[ -z "$LESSOPEN" ]] && (( $#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
+
+export CLASSPATH=".:/usr/share/java/antlr-complete.jar:$CLASSPATH"
+# PYENV INIT
+export PYENV_ROOT=~/.pyenv
+# Set Path
+path=(
+  /opt/nvidia/hpc_sdk/Linux_x86_64/22.2/comm_libs/mpi/bin
+  $PYENV_ROOT/bin
+  /home/zach/.local/bin
+  $HOME/.cargo/bin
+  /home/zach/.local/share/gem/ruby/3.0.0/bin
+  /home/zach/progfiles/Android/emulator
+  /home/zach/progfiles/matlab/R2021b/bin/
+  $GOROOT/bin
+  $GOPATH/bin
+  /usr/local/cuda/bin
+  /usr/local/{bin,sbin}
+  /home/zach/progfiles/river/bin/
+  $path
+)
+export MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/22.2/comm_libs/mpi/man
+
+export WORKON_HOME="${WORKON_HOME:-$HOME/.virtualenvs}"
+eval "$(pyenv init - --no-rehash)"
+eval "$(/home/zach/.local/bin/pyenv-sh-virtualenvwrapper_lazy)"
+eval "$(pyenv init --path --no-rehash)"

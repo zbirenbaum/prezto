@@ -31,6 +31,19 @@ You can change the default session name with:
 zstyle ':prezto:module:tmux:session' name '<YOUR DEFAULT SESSION NAME>'
 ```
 
+If you would like to create separate background sessions by default for SSH connections and local connections, you may do so by adding the following line to _`${ZDOTDIR:-$HOME}/.zpreztorc`_:
+
+```sh
+zstyle ':prezto:module:tmux:auto-start' separate 'yes'
+```
+
+If separation is enabled and names are not provided, the sessions will be named _prezto-local_ or _prezto-remote_ respectively. If a name is provided for one of the two connection types but not the other, only the unassigned name will be set to the default. The names of these sessions are customizable in a similar manner to above: 
+
+```sh
+zstyle ':prezto:module:tmux:session:local' name <YOUR DEFAULT LOCAL SESSION NAME>
+zstyle ':prezto:module:tmux:session:remote' name '<YOUR DEFAULT REMOTE SESSION NAME>'
+```
+
 With `auto-start` enabled, you may want to control how multiple sessions are
 managed. The `destroy-unattached` option of tmux controls if the unattached
 sessions must be kept alive, making sessions available for later use, configured

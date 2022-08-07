@@ -1,13 +1,61 @@
-#
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
 
+# Auto start a session when Zsh is launched in a local terminal.
+# function exit {
+#   if [ ${TMUX} ] && [ $(tmux list-panes | wc -l) -eq 1 ] && [ -z $NVIM_LISTEN_ADDRESS ]; then
+#     tmux detach
+#   else 
+#       builtin exit
+#   fi
+# }
+# kitty shell integration
+if test -n "$KITTY_INSTALLATION_DIR"; then
+    export KITTY_SHELL_INTEGRATION="enabled"
+    autoload -Uz -- "$KITTY_INSTALLATION_DIR"/shell-integration/zsh/kitty-integration
+    kitty-integration
+    unfunction kitty-integration
+fi
+source "$HOME/.config/zsh/.zcustomcolors.zsh"
+
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
+if [[ "$XDG_SESSION_TYPE" == "wayland" ]]; then
+  export KITTY_ENABLE_WAYLAND=1
+fi
+
+bindkey "^[[H" beginning-of-line
+bindkey "^[[F" end-of-line
+source "$HOME/.config/zsh/.zvmfunc.zsh"
+source "$HOME/.config/zsh/vi_mode_cursorswitch.zsh"
+
+
+#bindkey 'kj' vi-cmd-mode
+
+#bindkey 'jk' vi-cmd-mode
+#bindkey 'kj' vi-cmd-mode
 # Customize to your needs...
+#setopt prompt_subst PROMPT='$FG[237]${(l:$COLUMNS::=:):-}%{$reset_color%}'
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+# NVM INIT
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+# if tmux is executable, X is running, and not inside a tmux session, then try to attach.
+# if attachment fails, start a new session
+# LOAD PYENV MUST BE AT BOTTOM
+autoload -U compinit && compinit
+#change loc later
+
+export VIRTUALENVWRAPPER_PYTHON=$(pyenv which python)
+eval "$(cat $HOME/.config/zsh/pyenv_rc.sh)"
+pyenv virtualenvwrapper_lazy
+# export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+alias luamake=/home/zach/progfiles/lua-language-server/3rd/luamake/luamake
